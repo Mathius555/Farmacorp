@@ -1,0 +1,7 @@
+{
+  "name": "Farmacorp",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
