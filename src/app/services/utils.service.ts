@@ -30,8 +30,18 @@ async presentToast(opts?: ToastOptions) {
 
 
 //----------------Enrutador---------------------
-routerLink (url: string) {
- return this.router.navigateByUrl(url);
+async routerLink(url: string) {
+  if (url === '/main/home') {
+    // Obtener el usuario del localStorage
+    const user = this.getFromLocalStorage('user');
+    
+    if (user?.role === 'admin') {
+      return this.router.navigateByUrl('/main/admin-home');
+    } else {
+      return this.router.navigateByUrl('/main/home');
+    }
+  }
+  return this.router.navigateByUrl(url);
 }
 
 

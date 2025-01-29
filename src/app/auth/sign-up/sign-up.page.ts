@@ -22,6 +22,7 @@ export class SignUpPage implements OnInit {
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', Validators.required),
     name: new FormControl('', [Validators.required, Validators.minLength(4)]),
+    role: new FormControl('client') // Por defecto asignamos el rol 'client'
   });
 
   constructor() { }
@@ -74,18 +75,25 @@ export class SignUpPage implements OnInit {
     if (this.form.valid) {
       const loading = await this.utilsSvc.loading();
       await loading.present();
-
+  
       let path = `users/${uid}`;
       delete this.form.value.password;
-
+  
       this.firebaseSvc.setDocument(path, this.form.value).then(async res => {
-        this.utilsSvc.saveInLocalStorage ('user', this.form.value);
-        this.utilsSvc.routerLink ('/main/home');
+        this.utilsSvc.saveInLocalStorage('user', this.form.value);
+        
+        // Redirección según el rol
+        if (this.form.value.role === 'admin') {
+          this.utilsSvc.routerLink('/main/admin-home');
+        } else {
+          this.utilsSvc.routerLink('/main/home');
+        }
+        
         this.form.reset();
     
       }).catch(error => {
         console.log(error);
-
+  
         this.utilsSvc.presentToast({
           message: error.message,
           duration: 2500,
