@@ -1,45 +1,25 @@
-import { ActivatedRouteSnapshot,CanActivateFn, RouterStateSnapshot, UrlTree } from '@angular/router';  
-import { Injectable, inject } from '@angular/core';  
-import { Observable } from 'rxjs';  
+import { CanActivateFn } from '@angular/router';
+import { inject } from '@angular/core';
 import { FirebaseService } from '../services/firebase.service';
 import { UtilsService } from '../services/utils.service';
 
-@Injectable({
- providedIn:'root'
-})
+export const authGuard: CanActivateFn = async (route, state) => {
+  const firebaseSvc = inject(FirebaseService);
+  const utilsSvc = inject(UtilsService);
+  const auth = firebaseSvc.getAuth().currentUser;
+
+  if (!auth) {
+    return true; 
+  }
 
 
-export class implements CanActivateFn {
-
-firebaseSvc = inject(FirebaseService);
-utilsSvc = inject(UtilsService);
-
-
-canActivate(
-route: ActivatedRouteSnapshot,
-state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree{
-
-
-
-  return new Promise((resolve) => {
-
-    this.firebaseSvc.getAuth().onAuthStateChanged((auth)=>{
-
-    if(!auth) resolve(true);
-    
-    else{
-      this.utilsSvc.routerLink('/main/home');
-      resolve (false);
-    }
-
-    })
-    
-  });
-
-
-
-
-}
-
+  const role = await firebaseSvc.getUserRole(auth.uid);
   
+  if (role === 'admin') {
+    utilsSvc.routerLink('/main/admin-home');
+  } else {
+    utilsSvc.routerLink('/main/home');
+  }
+
+  return false; 
 };

@@ -4,7 +4,6 @@
 
 export const environment = {
   production: false,
-
   firebaseConfig: {
     apiKey: "AIzaSyD2fkazi6RayBoFXNC0pIfWH-y9VDZAvS4",
     authDomain: "farmacorp-app-8bbf9.firebaseapp.com",
