@@ -1,4 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
+import { Product } from 'src/app/models/product.model';
 import { User } from 'src/app/models/user.model';
 import { FirebaseService } from 'src/app/services/firebase.service';
 import { UtilsService } from 'src/app/services/utils.service';
@@ -15,7 +16,7 @@ export class AdminHomePage implements OnInit {
   utilsSvc = inject(UtilsService);
 
 
-  products: any[] = [];
+  products: Product[] = [];
   ngOnInit() {
   }
 
@@ -47,6 +48,7 @@ ionViewWillEnter() {
       next : (res: any) => {
 
         console.log(res);
+        this.products = res;
         sub.unsubscribe();
       }
     })
